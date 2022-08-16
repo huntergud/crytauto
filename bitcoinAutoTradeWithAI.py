@@ -76,7 +76,7 @@ while True:
                     upbit.buy_market_order("KRW-CVC", krw*0.9995)
         else:
             btc = get_balance("CVC")
-            if btc > 0.00008:
+            if btc > 17.8:
                 upbit.sell_market_order("KRW-CVC", btc*0.9995)
         time.sleep(1)
     except Exception as e:
