@@ -47,8 +47,8 @@ def predict_price(ticker):
         closeDf = forecast[forecast['ds'] == data.iloc[-1]['ds'].replace(hour=9)]
     closeValue = closeDf['yhat'].values[0]
     predicted_close_price = closeValue
-predict_price("KRW-ETG")
-schedule.every().hour.do(lambda: predict_price("KRW-ETG"))
+predict_price("KRW-ETC")
+schedule.every().hour.do(lambda: predict_price("KRW-ETC"))
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
