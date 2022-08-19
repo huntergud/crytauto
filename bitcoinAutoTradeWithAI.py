@@ -7,11 +7,6 @@ from fbprophet import Prophet
 access = "J1JmPXWhFWAb1DLiDE8ZK1x7az2f77NOsCCOURas"
 secret = "cTH8cJaZzdXZnoV4bmaYEbpthkKm2ds4ETc6MsT2"
 
-def get_target_price(ticker, k):
-    """변동성 돌파 전략으로 매수 목표가 조회"""
-    df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
-    target_price = df.iloc[0]['close'] + (df.iloc[0]['high'] - df.iloc[0]['low']) * k
-    return target_price
 
 def get_start_time(ticker):
     """시작 시간 조회"""
@@ -52,8 +47,8 @@ def predict_price(ticker):
         closeDf = forecast[forecast['ds'] == data.iloc[-1]['ds'].replace(hour=9)]
     closeValue = closeDf['yhat'].values[0]
     predicted_close_price = closeValue
-predict_price("KRW-CVC")
-schedule.every().hour.do(lambda: predict_price("KRW-CVC"))
+predict_price("KRW-ETG")
+schedule.every().hour.do(lambda: predict_price("KRW-ETG"))
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
@@ -63,21 +58,21 @@ print("autotrade start")
 while True:
     try:
         now = datetime.datetime.now()
-        start_time = get_start_time("KRW-CVC")
+        start_time = get_start_time("KRW-ETC")
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
 
         if start_time < now < end_time - datetime.timedelta(seconds=10):
-            target_price = get_target_price("KRW-CVC", 0.5)
-            current_price = get_current_price("KRW-CVC")
+            target_price = get_target_price("KRW-ETC", 0.7)
+            current_price = get_current_price("KRW-ETC")
             if target_price < current_price and current_price < predicted_close_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
-                    upbit.buy_market_order("KRW-CVC", krw*0.9995)
+                    upbit.buy_market_order("KRW-ETC", krw*0.9995)
         else:
-            btc = get_balance("CVC")
-            if btc > 17.8:
-                upbit.sell_market_order("KRW-CVC", btc*0.9995)
+            btc = get_balance("ETC")
+            if btc > 0.095:
+                upbit.sell_market_order("KRW-ETC", btc*0.9995)
         time.sleep(1)
     except Exception as e:
         print(e)
